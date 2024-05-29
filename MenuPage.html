@@ -1,0 +1,799 @@
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- from bootstrap intro -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+        crossorigin="anonymous"
+    />
+    <style>
+        /* Add animation to the title (same as home page) */
+        @keyframes pulse {
+            0% { color: #007bff; }
+            50% { color: #ff5858; }
+            100% { color: #007bff; }
+        }
+
+        title {
+            animation: pulse 3s infinite;
+        }
+
+        /* Hover effect for navigation links (same as home page) */
+        .navbar-nav a:hover {
+            background-color: #ff5858; /* Change the background color to pink on hover */
+            color: #fff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Animated header background (same as home page) */
+        header {
+            background-image: url('header-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            animation: changeBackground 10s infinite;
+        }
+
+        @keyframes changeBackground {
+            0% { background-image: url('header-bg1.jpg'); }
+            50% { background-image: url('header-bg2.jpg'); }
+            100% { background-image: url('header-bg1.jpg'); }
+        }
+
+        /* Additional styles for menu items */
+        .menu-item {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .menu-item img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .menu-item h3 {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .nutritional-info-popup {
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          padding: 20px;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          z-index: 1
+        }
+
+        #bg-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .footer-container.shaded {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    
+        .footer-container.shaded img.visit-us-logo {
+            max-width: 100%;
+            max-height: 300px; 
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<!-- from bootstrap intro: Responsive meta tag -->
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+
+<!-- navbar -->
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="HomePage.html">
+        <img
+            src="Logo.JPG"
+            width="100"
+            height="100"
+            alt="Pasta Pantry Logo"
+            loading="lazy"
+        />
+    </a>
+    <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+    >
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-link" href="HomePage.html">Home</a>
+            <a class="nav-link" href="MenuPage.html">Menu</a>
+            <a class="nav-link" href="Reservations.html">Reservations</a>
+            <a class="nav-link" href="aboutus.html">About Us</a>
+            <a class="nav-link" href="CartPage.html">Your Cart 🛒</a>
+        </div>
+    </div>
+</nav>
+
+
+
+<!-- from bootstrap intro: bundle -->
+<script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous">
+</script>
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous">
+</script>
+<script>
+  let cart = [];
+
+  function addToCart(itemName, price) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existingItem = cart.find(item => item.name === itemName);
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({ name: itemName, price: price, quantity: 1 });
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+
+  // Example function to handle 'Add to Order' button click
+  // Call this function from the 'Add to Order' buttons with the appropriate item name and price
+  function onAddToOrderClicked(itemName, price) {
+      addToCart(itemName, price);
+      // You can also add code here to update cart display on the page
+  }
+
+  
+</script>
+
+
+
+<body>
+
+  <a href="CartPage.html" class="btn btn-primary go-to-cart">Go to Cart</a>
+
+ <div class="container">
+    <div class="menu">
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+        <!--Darkened background for nutritional info-->
+      <div id="bg-overlay"></div>
+
+        <!--Appetizer-->
+      <h2 class="menu-group-heading">
+        Appetizers
+      </h2>
+      
+
+
+        <!--Calamari-->
+      <div class="menu-group">
+        <div class="menu-item">
+          <img class="menu-item-image" src="calamari.webp" alt="Fried Calamari">
+          <div class="menu-item-text">
+            <h3 class="menu-item-heading">
+              <span class="menu-item-name">Calamari</span>
+              <span class="menu-item-price">$9.99</span>
+            </h3>
+            <p class="menu-item-description">
+              Tender calamari, lightly breaded and fried to perfection. 
+              Served with zesty aioli for a delightful seafood experience.
+            </p>
+            <br>
+            <div class="menu-item-buttons">
+                <button class="view-nutrition-button" id = "calamari-nutrition" onclick = "showCalamariPopup()">Nutritional Information</button>
+                <button class="add-to-order-button" onclick="onAddToOrderClicked('Calamari', 9.99)">Add to Order</button>
+              </div>  
+          </div>         
+        </div>
+
+        <div class = "nutritional-info-popup" id = "calamari-popup">
+          <h3>Calamari: Nutritional Info</h3>
+          <p>Calories: 356g</p>
+          <p>Total Fats: 15g</p>
+          <p>Cholesterol: 192mg</p>
+          <p>Sugar: 0.1g</p>
+          <p>Protein: 18g</p>
+          <button onclick = "hideCalamariPopup()">Close</button>
+        </div>
+
+        <script>
+          function showCalamariPopup() {
+            document.getElementById('calamari-popup').style.display = 'block';
+            document.getElementById('bg-overlay').style.display = 'block';
+          }
+
+          function hideCalamariPopup() {
+            document.getElementById('calamari-popup').style.display = 'none';
+            document.getElementById('bg-overlay').style.display = 'none';
+          }
+        </script>
+
+        <!--Mozzarella Sticks-->
+        <div class="menu-item">
+          <img class="menu-item-image" src="Mozarella Stick.webp" alt="Mozarella Sticks">
+          <div class="menu-item-text">
+            <h3 class="menu-item-heading">
+              <span class="menu-item-name">Mozzarella Sticks</span>
+              <span class="menu-item-price">$8.99</span>
+            </h3>
+            <p class="menu-item-description">
+              Golden, crispy sticks of mozzarella cheese, served with marinara 
+              dipping sauce for a cheesy, savory delight.
+            </p>
+            <br>
+            <div class="menu-item-buttons">
+                <button class="view-nutrition-button" id = "mozzarella-nutrition" onclick = "showMozzarellaPopup()">Nutritional Information</button>
+                <button class="add-to-order-button" onclick="onAddToOrderClicked('Mozarella Stick', 8.99)">Add to Order</button>
+              </div>  
+          </div>
+        </div>
+
+        <div class = "nutritional-info-popup" id = "mozzarella-popup">
+          <h3>Mozzarella Sticks: Nutritional Info (Per Stick)</h3>
+          <p>Calories: 300g</p>
+          <p>Total Fats: 15g</p>
+          <p>Cholesterol: 3mg</p>
+          <p>Sugar: 25g</p>
+          <p>Protein: 15g</p>
+          <button onclick = "hideMozzarellaPopup()">Close</button>
+        </div>
+
+        <script>
+          function showMozzarellaPopup() {
+            document.getElementById('mozzarella-popup').style.display = 'block';
+            document.getElementById('bg-overlay').style.display = 'block';
+          }
+
+          function hideMozzarellaPopup() {
+            document.getElementById('mozzarella-popup').style.display = 'none';
+            document.getElementById('bg-overlay').style.display = 'none';
+          }
+        </script>
+
+
+        <!--Pizza bites-->
+        <div class="menu-item">
+            <img class="menu-item-image" src="Pizza Bite.jpeg" alt="Pizza Bites">
+            <div class="menu-item-text">
+              <h3 class="menu-item-heading">
+                <span class="menu-item-name">Pizza Bites</span>
+                <span class="menu-item-price">$9.99</span>
+              </h3>
+              <p class="menu-item-description">
+                Mini pockets of pizza perfection, each bite bursting with savory tomato sauce, 
+                melted cheese, and pepperoni.
+              </p>
+              <br>
+              <div class="menu-item-buttons">
+                  <button class="view-nutrition-button" id="pizzabite-nutrition" onclick="showPizzaBitePopup()">Nutritional Information</button>
+                  <button class="add-to-order-button" onclick="onAddToOrderClicked('Pizza Bites', 9.99)">Add to Order</button>
+                </div>  
+            </div>
+          </div>
+
+        <div class = "nutritional-info-popup" id = "pizzabite-popup">
+          <h3>Pizza Bites: Nutritional Info (6 per serving)</h3>
+          <p>Calories: 264g</p>
+          <p>Total Fats: 7.8g</p>
+          <p>Cholesterol: 4.8mg</p>
+          <p>Sugar: 3g</p>
+          <p>Protein: 7.2g</p>
+          <button onclick = "hidePizzaBitePopup()">Close</button>
+        </div>
+
+        <script>
+          function showPizzaBitePopup() {
+            document.getElementById('pizzabite-popup').style.display = 'block';
+            document.getElementById('bg-overlay').style.display = 'block';
+          }
+
+          function hidePizzaBitePopup() {
+            document.getElementById('pizzabite-popup').style.display = 'none';
+            document.getElementById('bg-overlay').style.display = 'none';
+          }
+        </script>
+
+
+        <!--Breadstick-->
+          <div class="menu-item">
+            <img class="menu-item-image" src="Breadstick.jpeg" alt="Breadsticks">
+            <div class="menu-item-text">
+              <h3 class="menu-item-heading">
+                <span class="menu-item-name">Breadsticks</span>
+                <span class="menu-item-price">$7.99</span>
+              </h3>
+              <p class="menu-item-description">
+                Oven-fresh breadsticks, golden and irresistibly soft, 
+                served with a side of zesty marinara sauce for dipping.
+              </p>
+              <br>
+              <div class="menu-item-buttons">
+                  <button class="view-nutrition-button" id = "breadstick-nutrition" onclick = "showBreadstickPopup()">Nutritional Information</button>
+                  <button class="add-to-order-button" onclick="onAddToOrderClicked('Breadsticks', 7.99)">Add to Order</button>
+                </div>  
+            </div>
+          </div>
+      </div>
+
+      <div class = "nutritional-info-popup" id = "breadstick-popup">
+        <h3>Breadsticks: Nutritional Info (5 per serving)</h3>
+        <p>Calories: 125g</p>
+        <p>Total Fats: 2.8g</p>
+        <p>Cholesterol: 0mg</p>
+        <p>Sugar: 0.4g</p>
+        <p>Protein: 3.6g</p>
+        <button onclick = "hideBreadstickPopup()">Close</button>
+      </div>
+
+      <script>
+        function showBreadstickPopup() {
+          document.getElementById('breadstick-popup').style.display = 'block';
+          document.getElementById('bg-overlay').style.display = 'block';
+        }
+
+        function hideBreadstickPopup() {
+          document.getElementById('breadstick-popup').style.display = 'none';
+          document.getElementById('bg-overlay').style.display = 'none';
+        }
+      </script>
+
+      <!--Entree-->
+      <h2 class="menu-group-heading">
+        Entrées
+      </h2>
+
+      <!--Meatball Marinara-->
+      <div class="menu-group">
+        <div class="menu-item">
+          <img class="menu-item-image" src="pasta2.jpg" alt="Meatball Marinara">
+          <div class="menu-item-text">
+            <h3 class="menu-item-heading">
+              <span class="menu-item-name">Meatball Marinara</span>
+              <span class="menu-item-price">$14.99</span>
+            </h3>
+            <p class="menu-item-description">
+              Savor the classic combination of tender meatballs in a rich and savory marinara sauce. 
+              Perfectly paired with your choice of pasta for a hearty and comforting meal.
+            </p>
+            <br>
+            <div class="menu-item-buttons">
+                <button class="view-nutrition-button" id="meatball-nutrition" onclick="showMeatballPopup()">Nutritional Information</button>
+                <button class="add-to-order-button" onclick="onAddToOrderClicked('Meatball Marinara', 14.99)">Add to Order</button>
+              </div>
+          </div>
+        </div>
+
+      <div class = "nutritional-info-popup" id = "meatball-popup">
+        <h3>Meatball Marinara: Nutritional Info</h3>
+        <p>Calories: 786g</p>
+        <p>Total Fats: 30g</p>
+        <p>Cholesterol: 76mg</p>
+        <p>Sugar: 11.6g</p>
+        <p>Protein: 32g</p>
+        <button onclick = "hideMeatballPopup()">Close</button>
+      </div>
+
+      <script>
+        function showMeatballPopup() {
+          document.getElementById('meatball-popup').style.display = 'block';
+          document.getElementById('bg-overlay').style.display = 'block';
+        }
+
+        function hideMeatballPopup() {
+          document.getElementById('meatball-popup').style.display = 'none';
+          document.getElementById('bg-overlay').style.display = 'none';
+        }
+      </script>
+
+      <!--Shrimp Scampi Delight-->
+        <div class="menu-item">
+          <img class="menu-item-image" src="Pasta3.jpeg" alt="Shrimp Scampi Delight">
+          <div class="menu-item-text">
+            <h3 class="menu-item-heading">
+              <span class="menu-item-name">Shrimp Scampi Delight</span>
+              <span class="menu-item-price">$14.99</span>
+            </h3>
+            <p class="menu-item-description">
+              Plump and succulent shrimp sautéed in a garlic-infused buttery sauce, 
+              served over a bed of tender pasta. A delightful seafood indulgence.
+            </p>
+            <br>
+            <div class="menu-item-buttons">
+                <button class="view-nutrition-button" id="shrimpscampi-nutrition" onclick="showShrimpScampiPopup()">Nutritional Information</button>
+                <button class="add-to-order-button" onclick="onAddToOrderClicked('Shrimp Scampi Delight', 14.99)">Add to Order</button>
+              </div>
+          </div>
+        </div>
+
+      <div class = "nutritional-info-popup" id = "shrimpscampi-popup">
+        <h3>Shrimp Scampi Delight: Nutritional Info</h3>
+        <p>Calories: 478g</p>
+        <p>Total Fats: 24g</p>
+        <p>Cholesterol: 466mg</p>
+        <p>Sugar: 3g</p>
+        <p>Protein: 46g</p>
+        <button onclick = "hideShrimpScampiPopup()">Close</button>
+      </div>
+
+      <script>
+        function showShrimpScampiPopup() {
+          document.getElementById('shrimpscampi-popup').style.display = 'block';
+          document.getElementById('bg-overlay').style.display = 'block';
+        }
+
+        function hideShrimpScampiPopup() {
+          document.getElementById('shrimpscampi-popup').style.display = 'none';
+          document.getElementById('bg-overlay').style.display = 'none';
+        }
+      </script>
+
+      <!--Chicken Fettuccine Alfredo-->
+        <div class="menu-item">
+            <img class="menu-item-image" src="chickenalfredo.jpeg" alt="Chicken Fettuccine Alfredo">
+            <div class="menu-item-text">
+              <h3 class="menu-item-heading">
+                <span class="menu-item-name">Chicken Fettuccine Alfredo</span>
+                <span class="menu-item-price">$13.99</span>
+              </h3>
+              <p class="menu-item-description">
+                Tender chicken strips and fettuccine noodles smothered in a creamy Alfredo sauce, 
+                creating a rich and satisfying Italian classic.
+              </p>
+              <br>
+              <div class="menu-item-buttons">
+                  <button class="view-nutrition-button" id="chickenalfredo-nutrition" onclick="showChickenAlfredoPopup()">Nutritional Information</button>
+                  <button class="add-to-order-button" onclick="onAddToOrderClicked('Chicken Fettuccine Alfredo', 13.99)">Add to Order</button>
+                </div>
+            </div>
+          </div>
+
+      <div class = "nutritional-info-popup" id = "chickenalfredo-popup">
+        <h3>Chicken Fettccine Alfredo: Nutritional Info</h3>
+        <p>Calories: 1191g</p>
+        <p>Total Fats: 81g</p>
+        <p>Cholesterol: 282mg</p>
+        <p>Sugar: 4.7g</p>
+        <p>Protein: 46g</p>
+        <button onclick = "hideChickenAlfredoPopup()">Close</button>
+      </div>
+
+      <script>
+        function showChickenAlfredoPopup() {
+          document.getElementById('chickenalfredo-popup').style.display = 'block';
+          document.getElementById('bg-overlay').style.display = 'block';
+        }
+
+        function hideChickenAlfredoPopup() {
+          document.getElementById('chickenalfredo-popup').style.display = 'none';
+          document.getElementById('bg-overlay').style.display = 'none';
+        }
+      </script>
+
+      <!--Penne Alla Pomodoro-->
+          <div class="menu-item">
+            <img class="menu-item-image" src="penne.jpeg" alt="Penne Alla Pomodoro">
+            <div class="menu-item-text">
+              <h3 class="menu-item-heading">
+                <span class="menu-item-name">Penne Alla Pomodoro</span>
+                <span class="menu-item-price">$14.99</span>
+              </h3>
+              <p class="menu-item-description">
+                Al dente penne pasta generously coated in a vibrant and flavorful tomato sauce, 
+                perfectly seasoned with fresh herbs and basil. Top with tomatoes.
+              </p>
+              <br>
+              <div class="menu-item-buttons">
+                  <button class="view-nutrition-button" id="penne-nutrition" onclick="showPennePopup()">Nutritional Information</button>
+                  <button class="add-to-order-button" onclick="onAddToOrderClicked('Penne Alla Pomodoro', 14.99)">Add to Order</button>
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <div class = "nutritional-info-popup" id = "penne-popup">
+        <h3>Penne Alla Pomodoro: Nutritional Info</h3>
+        <p>Calories: 636g</p>
+        <p>Total Fats: 24g</p>
+        <p>Cholesterol: 22mg</p>
+        <p>Sugar: 13.4g</p>
+        <p>Protein: 18.4g</p>
+        <button onclick = "hidePennePopup()">Close</button>
+      </div>
+
+      <script>
+        function showPennePopup() {
+          document.getElementById('penne-popup').style.display = 'block';
+          document.getElementById('bg-overlay').style.display = 'block';
+        }
+
+        function hidePennePopup() {
+          document.getElementById('penne-popup').style.display = 'none';
+          document.getElementById('bg-overlay').style.display = 'none';
+        }
+      </script>
+
+      <!--Dessert-->
+      <h2 class="menu-group-heading">
+        Desserts
+      </h2>
+
+      <!--Tiramisu-->
+      <div class="menu-group">
+        <div class="menu-item">
+          <img class="menu-item-image" src="tiramisu.jpeg" alt="Classic Italian Tiramisu">
+          <div class="menu-item-text">
+            <h3 class="menu-item-heading">
+              <span class="menu-item-name">Classic Italian Tiramisu</span>
+              <span class="menu-item-price">$7.99</span>
+            </h3>
+            <p class="menu-item-description">
+              Indulge in the timeless delight of layers of coffee-soaked ladyfingers, mascarpone cream, 
+              and cocoa powder. A true Italian favorite.
+            </p>
+            <br>
+            <div class="menu-item-buttons">
+                <button class="view-nutrition-button" id="tiramisu-nutrition" onclick="showTiramisuPopup()">Nutritional Information</button>
+                <button class="add-to-order-button" onclick="onAddToOrderClicked('Classic Italian Tiramisu', 7.99)">Add to Order</button>
+              </div>
+          </div>
+        </div>
+
+        
+      <div class = "nutritional-info-popup" id = "tiramisu-popup">
+        <h3>Classic Italian Tiramisu: Nutritional Info</h3>
+        <p>Calories: 392g</p>
+        <p>Total Fats: 30g</p>
+        <p>Cholesterol: 210mg</p>
+        <p>Sugar: 14g</p>
+        <p>Protein: 5.7g</p>
+        <button onclick = "hideTiramisuPopup()">Close</button>
+      </div>
+
+      <script>
+        function showTiramisuPopup() {
+          document.getElementById('tiramisu-popup').style.display = 'block';
+          document.getElementById('bg-overlay').style.display = 'block';
+        }
+
+        function hideTiramisuPopup() {
+          document.getElementById('tiramisu-popup').style.display = 'none';
+          document.getElementById('bg-overlay').style.display = 'none';
+        }
+      </script>
+
+      <!--Orange Cake-->
+        <div class="menu-item">
+          <img class="menu-item-image" src="orangecake.jpeg" alt="Tangy Citrus Chocolate Delight">
+          <div class="menu-item-text">
+            <h3 class="menu-item-heading">
+              <span class="menu-item-name">Tangy Citrus Chocolate Delight</span>
+              <span class="menu-item-price">$6.99</span>
+            </h3>
+            <p class="menu-item-description">
+              A harmonious blend of zesty citrus and rich chocolate, creating a dessert that's both 
+              refreshing and indulgent. A delightful treat for your taste buds.
+            </p>
+            <br>
+            <div class="menu-item-buttons">
+                <button class="view-nutrition-button" id="orangecake-nutrition" onclick="showOrangeCakePopup()">Nutritional Information</button>
+                <button class="add-to-order-button" onclick="onAddToOrderClicked('Tangy Citrus Chocolate Delight', 6.99)">Add to Order</button>
+              </div>
+          </div>
+        </div>
+
+        <div class = "nutritional-info-popup" id = "orangecake-popup">
+          <h3>Tangy Citrus Chocolate Delight: Nutritional Info</h3>
+          <p>Calories: 414g</p>
+          <p>Total Fats: 18g</p>
+          <p>Cholesterol: 54mg</p>
+          <p>Sugar: 47g</p>
+          <p>Protein: 3.3g</p>
+          <button onclick = "hideOrangeCakePopup()">Close</button>
+        </div>
+  
+        <script>
+          function showOrangeCakePopup() {
+            document.getElementById('orangecake-popup').style.display = 'block';
+            document.getElementById('bg-overlay').style.display = 'block';
+          }
+  
+          function hideOrangeCakePopup() {
+            document.getElementById('orangecake-popup').style.display = 'none';
+            document.getElementById('bg-overlay').style.display = 'none';
+          }
+        </script>
+
+      <!--Fondue-->
+        <div class="menu-item">
+            <img class="menu-item-image" src="fondue.jpeg" alt="Fondue Fiesta">
+            <div class="menu-item-text">
+              <h3 class="menu-item-heading">
+                <span class="menu-item-name">Fondue Fiesta</span>
+                <span class="menu-item-price">$9.99</span>
+              </h3>
+              <p class="menu-item-description">
+                Dip into a variety of mouthwatering options, from melted cheese to luscious chocolate, 
+                all designed for sharing and savoring.".
+              </p>
+              <br>
+              <div class="menu-item-buttons">
+                  <button class="view-nutrition-button" id="fondue-nutrition" onclick="showFonduePopup()">Nutritional Information</button>
+                  <button class="add-to-order-button" onclick="onAddToOrderClicked('Fondue Fiesta', 9.99)">Add to Order</button>
+                </div>
+            </div>
+          </div>
+
+        <div class = "nutritional-info-popup" id = "fondue-popup">
+          <h3>Fondue Fiesta: Nutritional Info</h3>
+          <p>Calories: 480g</p>
+          <p>Total Fats: 26g</p>
+          <p>Cholesterol: 30mg</p>
+          <p>Sugar: 56g</p>
+          <p>Protein: 4g</p>
+          <button onclick = "hideFonduePopup()">Close</button>
+        </div>
+  
+        <script>
+          function showFonduePopup() {
+            document.getElementById('fondue-popup').style.display = 'block';
+            document.getElementById('bg-overlay').style.display = 'block';
+          }
+  
+          function hideFonduePopup() {
+            document.getElementById('fondue-popup').style.display = 'none';
+            document.getElementById('bg-overlay').style.display = 'none';
+          }
+        </script>
+
+      <!--Lime Cheesecake-->
+          <div class="menu-item">
+            <img class="menu-item-image" src="limecheesecake.jpeg" alt="Lime Cheesecake">
+            <div class="menu-item-text">
+              <h3 class="menu-item-heading">
+                <span class="menu-item-name">Lime Cheesecake</span>
+                <span class="menu-item-price">$6.99</span>
+              </h3>
+              <p class="menu-item-description">
+                A zesty and creamy cheesecake infused with the refreshing essence of limes. 
+                A tangy, citrusy treat for dessert enthusiasts.
+              </p>
+              <br>
+              <div class="menu-item-buttons">
+                  <button class="view-nutrition-button" id="limecheesecake-nutrition" onclick="showLimeCheesecakePopup()">Nutritional Information</button>
+                  <button class="add-to-order-button">Add to Order</button>
+                </div>
+            </div>
+          </div>
+
+        <div class = "nutritional-info-popup" id = "limecheesecake-popup">
+          <h3>Lime Cheesecake: Nutritional Info</h3>
+          <p>Calories: 1160g</p>
+          <p>Total Fats: 86g</p>
+          <p>Cholesterol: 470mg</p>
+          <p>Sugar: 74g</p>
+          <p>Protein: 13g</p>
+          <button onclick = "hideLimeCheesecakePopup()">Close</button>
+        </div>
+  
+        <script>
+          function showLimeCheesecakePopup() {
+            document.getElementById('limecheesecake-popup').style.display = 'block';
+            document.getElementById('bg-overlay').style.display = 'block';
+          }
+  
+          function hideLimeCheesecakePopup() {
+            document.getElementById('limecheesecake-popup').style.display = 'none';
+            document.getElementById('bg-overlay').style.display = 'none';
+          }
+        </script>
+      </div>
+
+    </div>
+  </div>
+  <link rel="stylesheet" type="text/css" href="menutesting2STYLEs.css">
+
+</div>
+
+
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <!-- Visit Us! Header with Logo -->
+    <div class="footer-container shaded">
+      <h5>Visit Us!</h5>
+      <img src="logo-black.png" alt="Pasta Pantry Logo" class="visit-us-logo">
+    </div>
+
+    <!-- Location and Store Hours -->
+    <div class="footer-container shaded">
+      <div class="location-info">
+        <p>1230 Oakland St Unit 4<br>San Jose, California 95122</p>
+      </div>
+      <div class="footer-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3170.9467395951456!2d-121.89186149999999!3d37.3674371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fcc7a9e1d67a1%3A0x26eaaef8f67c352d!2s1230%20Old%20Oakland%20Rd%20%234%2C%20San%20Jose%2C%20CA%2095112!5e0!3m2!1sen!2sus!4v1701156090765" width="300" height="200" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+      </div>
+    </div>
+
+    <!-- Second Location and Map -->
+    <div class="footer-container shaded">
+      <div class="location-info">
+        <p>1 Washington Sq<br>San Jose, California 95192</p> 
+      </div>
+      <div class="footer-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3170.9467395951456!2d-121.89186149999999!3d37.3674371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fcc7a9e1d67a1%3A0x26eaaef8f67c352d!2s1%20Washington%20Sq%2C%20San%20Jose%2C%20CA%2095192!5e0!3m2!1sen!2sus!4v1701156090765" width="300" height="200" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+      </div>
+    </div>
+
+    <!-- Store Hours -->
+    <div class="footer-container shaded">
+      <h5>Store Hours</h5>
+      <p>Monday: 11AM - 10PM</p>
+      <p>Tuesday: Closed</p>
+      <p>Wednesday: 11AM - 10PM</p>
+      <p>Thursday: 11AM - 10PM</p>
+      <p>Friday: 11AM - 11PM</p>
+      <p>Saturday: 11AM - 11PM</p>
+      <p>Sunday: 11AM - 11PM</p>
+    </div>
+
+    <!-- Newsletter and Follow Us -->
+    <div class="footer-container shaded">
+      <h5>Join our mailing list!</h5>
+      <div class="newsletter-content" style="text-align: center;">
+        <form>
+          <div class="form-group">
+            <input type="email" placeholder="Email address" class="form-control" style="width: 200px; margin: 0 auto;"> 
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+        </form>
+      </div>
+      <h5>Follow Us</h5>
+      <button class="social-button" onclick="window.location.href='https://www.instagram.com'">
+        <img src="instagram.png" alt="Instagram">
+      </button>
+      <button class="social-button" onclick="window.location.href='https://www.twitter.com'">
+        <img src="twitter.png" alt="Twitter">
+      </button>
+      <button class="social-button" onclick="window.location.href='https://www.facebook.com'">
+        <img src="facebook.png" alt="Facebook">
+      </button>
+    </div>
+  </div>
+</footer>
